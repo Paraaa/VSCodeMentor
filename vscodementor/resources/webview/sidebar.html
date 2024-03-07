@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSCodeMentor</title>
+    <!-- STYLESHEET -->
+</head>
+<body>
+    <h1>Welcome to VSCodeMentor!</h1>
+    <!-- Your HTML content goes here -->
+    <div class="button-container">
+        <button id="askModelButton">Ask Model</button>
+        <button id="improveCodeButton">Improve Code</button>
+        <button id="changeModelButton">Change Model</button>
+        <button id="clearChatHistory">Clear Chat history</button>
+
+    </div>
+  
+    <hr>
+    <div>
+        <label for="toggleModelCheckbox">Toggle Model:</label>
+        <input type="checkbox" id="toggleModelCheckbox">
+
+        <label for="gpuSupportCheckbox">GPU Support:</label>
+        <input type="checkbox" id="toggleGpuSupportCheckbox">
+    </div>
+
+    <hr>
+    <div id="chatHistory" markdown="1"></div>
+
+    <div class="input-container">
+        <input id="askModelInput" type="text" placeholder="Ask the model!"></input>
+        <button id="sendInputButton">Send</button>
+    </div> 
+
+    <!-- MARKDOWN-IT -->
+    <script>
+        const vscode = acquireVsCodeApi()       
+        document.getElementById('askModelButton').addEventListener('click', function() {
+            vscode.postMessage({
+                command: 'vscodementor.askModel'
+            }, '*');
+        });
+        document.getElementById('changeModelButton').addEventListener('click', function() {
+            vscode.postMessage({
+                command: 'vscodementor.changeModel'
+            }, '*');
+        });
+        document.getElementById('askModelInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendPrompt();
+            }
+        });
+        document.getElementById('sendInputButton').addEventListener('click', function() {
+            sendPrompt();
+        });
+        document.getElementById('clearChatHistory').addEventListener('click', function() {
+            vscode.postMessage({
+                command: 'vscodementor.clearChatHistory'
+            }, '*');
+            const chatContainer = document.getElementById('chatHistory');
+            chatContainer.innerHTML = ''; // Clear the chat history
+        });
+        document.getElementById('improveCodeButton').addEventListener('click', function() {
+            vscode.postMessage({
+                command: 'vscodementor.improveCode'
+            }, '*');
+            setStagingChatHistory("**Editor Context**")
+        });
+
+
+        document.getElementById('toggleModelCheckbox').addEventListener('change', function() {
+            if (this.checked) {
+                vscode.postMessage({
+                    command: 'vscodementor.startModel'
+                }, '*');
+            } else {
+                vscode.postMessage({
+                    command: 'vscodementor.disableModel'
+                }, '*');
+            }
+        });
+        document.getElementById('toggleGpuSupportCheckbox').addEventListener('change', function() {
+            vscode.postMessage({
+                command: 'vscodementor.toggleGpuSupport',
+                enabled: this.checked
+            }, '*');
+        });
+
+
+
+
+        // Listen to messages from the extension
+        window.addEventListener('message', event => {
+            const message = event.data;
+            switch (message.command) {
+                case 'vscodementor.updateChatHistory':
+                    updateChatHistory(message.chatHistory)
+                    break;
+                case 'vscodementor.updateModelStatus':
+                    updateModelStatus(message.modelStatus)
+                    break;
+                case 'vscodementor.updateGpuStatus':
+                    updateGPUStatus(message.gpuStatus)
+                    break;
+            }
+        });
+
+        function updateModelStatus(modelStatus) {
+            const toggleModelCheckbox = document.getElementById('toggleModelCheckbox');
+            toggleModelCheckbox.checked = modelStatus;
+        }
+
+        function updateGPUStatus(gpuStatus) {
+            const toggleGpuSupportCheckbox = document.getElementById('toggleGpuSupportCheckbox');
+            toggleGpuSupportCheckbox.checked = gpuStatus;
+        }
+        
+        function updateChatHistory(chatHistory) {
+            const chatContainer = document.getElementById('chatHistory');
+            chatContainer.innerHTML = ''; // Clear the chat history
+            
+            chatHistory.forEach(messageText => {
+                const messageElement = document.createElement('p');
+                const sender = messageText.startsWith('You:') ? 'user' : 'model';
+                messageElement.className = `message ${sender}`;
+                messageElement.innerHTML = renderMarkdown(messageText);
+                chatContainer.appendChild(messageElement);
+            });
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom of chat
+        }
+
+        function sendPrompt() {
+            var prompt = document.getElementById('askModelInput').value;
+            if (!prompt) {
+                return
+            }
+            vscode.postMessage({
+                command: 'vscodementor.askModel',
+                prompt: prompt
+            }, '*');
+            
+            // Add the prompt to the chat history directly
+            setStagingChatHistory(prompt)
+        }
+
+
+        function setStagingChatHistory(prompt) {
+            // If the model is not running we don't want to show the staing chat history
+            const toggleModelCheckbox = document.getElementById('toggleModelCheckbox');
+            if(!toggleModelCheckbox.checked) {
+                return
+            }
+            const chatContainer = document.getElementById('chatHistory');
+            const messageElement = document.createElement('p');
+            messageElement.className = `message user`;
+            messageElement.textContent = `You: ${prompt}`;
+            chatContainer.appendChild(messageElement);
+
+            const spinner = document.createElement('div');
+            spinner.className = 'message spinner';
+            chatContainer.appendChild(spinner);
+
+            document.getElementById('askModelInput').value = "";
+        }
+
+        function renderMarkdown(content) {
+            const md = window.markdownit();
+            return md.render(content);
+        }
+    </script>
+</body>
+</html>

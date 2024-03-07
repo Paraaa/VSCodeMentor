@@ -1,0 +1,84 @@
+{
+  "name": "vscodementor",
+  "displayName": "VSCodeMentor",
+  "description": "Locally running LLM to improve code quality",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vscodementor-sidebar-view",
+          "title": "VSCodeMentor",
+          "icon": "./resources/vscodementorIcon.svg"
+        }
+      ]
+    },
+    "views": {
+      "vscodementor-sidebar-view": [
+        {
+          "type": "webview",
+          "id": "vscodementor-sidebar",
+          "name": "VSCodeMentor"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "vscodementor.askModel",
+        "title": "VSCodeMentor: Ask model"
+      },
+      {
+        "command": "vscodementor.changeModel",
+        "title": "VSCodeMentor: Change model"
+      },
+      {
+        "command": "vscodementor.disableModel",
+        "title": "VSCodeMentor: Disable model"
+      },
+      {
+        "command": "vscodementor.clearChatHistory",
+        "title": "VSCodeMentor: Clear model chat history"
+      },
+      {
+        "command": "vscodementor.startModel",
+        "title": "VSCodeMentor: Start model"
+      },
+      {
+        "command": "vscodementor.improveCode",
+        "title": "VSCodeMentor: Improve Code"
+      },
+      {
+        "command": "vscodementor.toggleGpuSupport",
+        "title": "VSCodeMentor: Toggle GPU Support"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "gpt4all": "^3.1.0",
+    "markdown-it": "^14.0.0"
+  }
+}

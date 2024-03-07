@@ -1,0 +1,64 @@
+[
+    {
+        "model_id": "mistral-7b-openorca.Q4_0.gguf",
+        "name": "OpenOrca Chat Model (8 GB)",
+        "size": "3.83 GB",
+        "ram": "8 GB",
+        "hardware_requirements": "medium",
+        "systemPromptTemplate":  "<|im_start|>system\n %1 <|im_end|>",
+        "onlyDevice": "gpu"
+    },
+    {
+        "model_id": "mistral-7b-instruct-v0.1.Q4_0.gguf",
+        "name": "OpenOrca Instruction Model (8 GB)",
+        "size": "3.83 GB",
+        "ram": "8 GB",
+        "hardware_requirements": "medium",
+        "systemPromptTemplate":  "<s>[INST] %1 [/INST]",
+        "onlyDevice": "gpu"
+    },
+    {
+        "model_id": "gpt4all-falcon-newbpe-q4_0.gguf",
+        "name": "Falcon Newbpe Model (8 GB)",
+        "size": "3.92 GB",
+        "ram": "8 GB",
+        "hardware_requirements": "medium",
+        "systemPromptTemplate":  "### System:\n%1",
+        "onlyDevice": "gpu"
+    },
+    {
+        "model_id": "nous-hermes-llama2-13b.Q4_0.gguf",
+        "name": "Nous Hermes Llama2 13b Model (16 GB)",
+        "size": "6.86 GB",
+        "ram": "16 GB",
+        "hardware_requirements": "high",
+        "systemPromptTemplate":  "### System:\n%1",
+        "onlyDevice": "gpu"
+    },
+    {
+        "model_id": "gpt4all-13b-snoozy-q4_0.gguf",
+        "name": "Gpt4all 13b Snoozy Model (16 GB)",
+        "size": "6.86 GB",
+        "ram": "16 GB",
+        "hardware_requirements": "high",
+        "systemPromptTemplate":  "### System:\n%1",
+        "onlyDevice": "gpu"
+    },
+    {
+        "model_id": "mpt-7b-chat-newbpe-q4_0.gguf",
+        "name": "Mpt 7b Chat Newbpe Model (8 GB)",
+        "size": "3.64 GB",
+        "ram": "8 GB",
+        "hardware_requirements": "medium",
+        "systemPromptTemplate":  "<|im_start|>system\n %1 <|im_end|>",
+        "onlyDevice": "gpu"
+    },
+    {
+        "model_id": "orca-mini-3b-gguf2-q4_0.gguf",
+        "name": "Orca Mini 3b Gguf2 Model (4 GB)",
+        "size": "1.84 GB",
+        "ram": "4 GB",
+        "hardware_requirements": "low",
+        "systemPromptTemplate":  "### System:\n%1"
+    }
+]
